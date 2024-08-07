@@ -20,7 +20,30 @@ export const CreateUserSchema = yup.object({
     ),
 });
 
-export const EmailVerificationBody = yup.object({
+export const TokenAndIdValidation = yup.object({
+  token: yup.string().trim().required("Invalid token!"),
+  userId: yup
+    .string()
+    .transform(function (value) {
+      if (this.isType(value) && isValidObjectId(value)) {
+        return value;
+      } else {
+        return "";
+      }
+    })
+    .required("Invalid userId!"),
+});
+
+export const UpdatePasswordSchema = yup.object({
+  password: yup
+    .string()
+    .trim()
+    .required("Password is missing!")
+    .min(8, "Password is too short!")
+    .matches(
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+      "Password is too simple!"
+    ),
   token: yup.string().trim().required("Invalid token!"),
   userId: yup
     .string()
